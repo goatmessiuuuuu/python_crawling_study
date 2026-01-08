@@ -18,6 +18,7 @@ height: 높이
 
 
 ★css 언어 적용하기
+-
 1. 적용할 태그에 style 속성으로 넣기
 : ex) <td style="text-align:center;color:blue">
 text-align, color : 프로퍼티
@@ -25,18 +26,20 @@ center(가운데정렬), blue, :값
 2. HTML 문서 <head> 안에 <style> 태그 넣기 
 3. HTML 문서 <head> 안에 css 파일 링크하기
 
-★css 프로퍼티: color, font-size, font-family, text-align
+-css 프로퍼티: color, font-size, font-family, text-align
 
 ★웹크롤링 과정 3단계
+-
 1. Fetching(내용 가져오기)
 2. Parsing (구조파악)
 3. Extraction(정보골라내기)
 
 ★HTML에서 class 나 id 속성이 웹 크롤링 시 데이터 추출에 유용한 이유?>
+-
 : class나 id는 css(디자인)을 위해 사용되지만, 
 특정 html 요소를 고유하게 식별하거나 그룹화 가능하기 때문
 
-★BeautifulSoup 객체에서 .get_text()나 .string 메서드를 호출하면 
+-BeautifulSoup 객체에서 .get_text()나 .string 메서드를 호출하면 
 해당요소의 시작 태그부터 끝 태그 사이의 모든 내용을 가져오되 
 포함된 하위 태그들은 제거하고 순수한 텍스트만 남겨준다.
 
@@ -44,6 +47,7 @@ center(가운데정렬), blue, :값
 
 
 ★<crawling tip> 1
+-
 1. 크롬 브라우저 활용 방법 
 Ctrl+shift+i(오픈 크롬 개발자 모드) -> 마우스로 원하는 부분 선택 
 ->태그랑 class 선택해서 원하는 데이터 추출
