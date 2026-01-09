@@ -1,92 +1,220 @@
-# python_crawling_study
-for studying crawling 
+# Python Web Crawling (실무 중심 정리)
 
-1. 웹 브라우저로 HTML을 오픈했는데 글자 깨짐 
-- head 안에 <meta charset="utf-8">
-- 유니코드 사용 - 전세계 문자를 정의 해놨음
+> **목표**: 웹 크롤링을 할 때 *현업/실습에서 바로 써먹는 핵심만* 빠르게 떠올릴 수 있게 정리
 
-2. 태그에는 속성을 넣을 수 있다
-<img src ="dimg.png" width="100" height="100">
+---
 
-img: 태그
-src: 속성이름 (여기선 이미지니까 이미지파일임)
-width: 넓이
-height: 높이 
+## 1. HTML 기본 개념 (크롤링 관점)
 
-필요한 태그는 html 사전 
-: https:devloper.ozilla.org/ko/docs/Web/HTML/Element
+### 1️⃣ 문자 인코딩 (글자 깨질 때)
 
+* HTML을 브라우저로 열었는데 한글이 깨지면 인코딩 문제일 가능성이 큼
+* `<head>` 안에 아래 메타 태그가 있으면 정상
 
-★css 언어 적용하기
--
-1. 적용할 태그에 style 속성으로 넣기
-: ex) <td style="text-align:center;color:blue">
-text-align, color : 프로퍼티
-center(가운데정렬), blue, :값 
-2. HTML 문서 <head> 안에 <style> 태그 넣기 
-3. HTML 문서 <head> 안에 css 파일 링크하기
+```html
+<meta charset="utf-8">
+```
 
--css 프로퍼티: color, font-size, font-family, text-align
+* UTF-8 = 유니코드 기반 (전 세계 문자 표현 가능)
+* 크롤링 시에도 `response.encoding = 'utf-8'` 설정이 필요할 수 있음
 
-★웹크롤링 과정 3단계
--
-1. Fetching(내용 가져오기)
-2. Parsing (구조파악)
-3. Extraction(정보골라내기)
+---
 
-★HTML에서 class 나 id 속성이 웹 크롤링 시 데이터 추출에 유용한 이유?>
--
-: class나 id는 css(디자인)을 위해 사용되지만, 
-특정 html 요소를 고유하게 식별하거나 그룹화 가능하기 때문
+### 2️⃣ 태그와 속성
 
--BeautifulSoup 객체에서 .get_text()나 .string 메서드를 호출하면 
-해당요소의 시작 태그부터 끝 태그 사이의 모든 내용을 가져오되 
-포함된 하위 태그들은 제거하고 순수한 텍스트만 남겨준다.
+```html
+<img src="dimg.png" width="100" height="100">
+```
 
+* `img` : 태그 이름
+* `src`, `width`, `height` : 속성(attribute)
+* **크롤링 포인트**: 필요한 정보는 대부분 *태그의 속성* 또는 *태그 안 텍스트*
 
+📌 HTML 태그 사전 (필수)
 
+* [https://developer.mozilla.org/ko/docs/Web/HTML/Element](https://developer.mozilla.org/ko/docs/Web/HTML/Element)
 
-★<crawling tip> 1
--
-1. 크롬 브라우저 활용 방법 
-Ctrl+shift+i(오픈 크롬 개발자 모드) -> 마우스로 원하는 부분 선택 
-->태그랑 class 선택해서 원하는 데이터 추출
+---
 
-#res는 requests 라이브러리 안에 정의된 Response 클래스의 객체(인스턴스)임
-#인스턴스: 어떤 클래스에서 만들어졌는지, 강조할 때 쓰는 말임 
+## 2. CSS 기본 (셀렉터 이해가 핵심)
 
-2.추출한 거 또 추출 
-- find()로 더 크게 감싸는 HTML 태그로 추출하고
-- 다시 추출된 데이터에서 find_all()로 원하는 부분 추출
--> find()는 첫번 째 일치하는 요소만 반환 , find_all()은 일치하는 모든 요소 리스트로 반환 
+### CSS 적용 방법 3가지 (알아만 두면 됨)
 
-3. 데이터 전처리 함수 strip(), split() 쓰기
-- 리스트 번호 접근 후, enumerate로 숫자 추가하기 or 공백 제거 etc..  
+1. 태그에 직접 적용 (inline)
 
+```html
+<td style="text-align:center; color:blue">
+```
 
+2. `<head>` 안에 `<style>` 태그
+3. `<head>` 안에 외부 CSS 파일 링크
 
-★<crawling tip> 2 (css selector <css선택자> . . 사용하기 꽤나 유용)
-1. 기존에는 find함수를 썼지만 , selcet() 안에 태그 또는 css class 이름 넣어주기 
-2. 결과 값은 리스트 형태로 반환 됨 . (items로 slect메서드 받아주고 리스트 형태로 출력하면 되겠지?) 
-(첫번째 데이터만 얻고자 할 때는 select_one() 사용하기 -> 해당 아이템 객체가 리턴 된다
+📌 자주 보이는 CSS 프로퍼티
 
--(1) 하위태그 띄워쓰기로 select 하기 , 바로 아래 태그는 > 꺾새 표시로 ㄲ 2칸 차이 나면 안됨 바로아래여야만
--(2) .class 이름 선택
--(3) #id 이름 검색  
--(4) 클래스가 여러개인 경우 : 태그.클래스이름1.클래스이름2
+* `color`, `font-size`, `font-family`, `text-align`
 
--> select() 안에 select 하는 중요한 방법 . .
+---
 
+## 3. 웹 크롤링 3단계 (⭐ 매우 중요)
 
-★기존에는 urllib + bs4 많이 사용, 최근 들어 requests + bs4 많이 사용
-   기존 코드 중 일부가 urllib 사용하니.. 간단한 사용법만 알아둡시다.
--> requests 라이브러리를 사용해서 크롤링 진행하고,  문제 있어 보이는 경우만
-     urllib 사용 추천
+1. **Fetching** : 웹 페이지 가져오기 (`requests.get()`)
+2. **Parsing** : HTML 구조 파악 (`BeautifulSoup`)
+3. **Extraction** : 필요한 데이터만 추출 (`find`, `select` 등)
 
-★클라이언트와 서버간에 웹페이지를 가져오기 위해선  requests 라이브러리를 써서
-요청하고 실제 네트워크에서 요청이 되고 응답이 되는 관련된 특별한 규격이 있음
-: Http라는 프로토콜 규격 
+👉 이 흐름이 머릿속에 자동으로 떠올라야 함
 
-★여러 페이지를 크롤링 하는 기법
-: 첫페이지 0번, 반복문 써가면서 num을 str로 변환후 + 문자열 이어붙이기 
-  if num==0, requests.get ,, else ...
+---
+
+## 4. class / id 가 중요한 이유
+
+* 원래 목적: **CSS 디자인용**
+* 크롤링에서는:
+
+  * 특정 요소를 **고유하게 식별(id)**
+  * 여러 요소를 **그룹화(class)** 가능
+
+👉 그래서 데이터 추출할 때 class / id 를 최우선으로 본다
+
+---
+
+## 5. BeautifulSoup 핵심 메서드
+
+### 텍스트 추출
+
+* `.get_text()`
+* `.string`
+
+✔ 시작 태그 ~ 끝 태그 사이의 **순수 텍스트만 반환**
+✔ 내부에 다른 태그가 있어도 제거됨
+
+---
+
+## 6. 크롤링 실전 TIP ① (개발자도구 활용)
+
+### 크롬 개발자도구
+
+* `Ctrl + Shift + I`
+* 마우스로 원하는 요소 선택
+* **태그 / class / id 확인 → 그대로 코드에 사용**
+
+---
+
+### Response 객체 개념
+
+```python
+res = requests.get(url)
+```
+
+* `res`는 `requests.Response` 클래스의 **인스턴스**
+* 인스턴스 = 어떤 클래스에서 만들어진 객체라는 걸 강조할 때 쓰는 말
+
+---
+
+### 1️⃣ 추출한 것에서 또 추출하기 (실무 패턴)
+
+1. `find()`로 큰 덩어리 선택
+2. 그 안에서 `find_all()`로 세부 데이터 추출
+
+```python
+box = soup.find('div', class_='box')
+items = box.find_all('li')
+```
+
+* `find()` → 첫 번째 하나만 반환
+* `find_all()` → 리스트로 반환
+
+---
+
+### 2️⃣ 데이터 전처리
+
+* `strip()` : 공백 제거
+* `split()` : 문자열 분리
+* `enumerate()` : 인덱스 번호 붙이기
+
+👉 크롤링의 절반은 **전처리**
+
+---
+
+## 7. 크롤링 실전 TIP ② (CSS Selector)
+
+> ⭐ **select() / select_one() 적극 추천**
+
+### 기본 특징
+
+* `select()` → 리스트 반환
+* `select_one()` → 요소 하나 반환
+
+---
+
+### CSS Selector 사용법
+
+1️⃣ 하위 태그
+
+```python
+soup.select('div ul li')
+```
+
+2️⃣ 바로 아래 자식 태그
+
+```python
+soup.select('div > ul')
+```
+
+(⚠️ 중간 태그 있으면 안 됨)
+
+3️⃣ class 선택
+
+```python
+soup.select('.title')
+```
+
+4️⃣ id 선택
+
+```python
+soup.select('#content')
+```
+
+5️⃣ 클래스 여러 개
+
+```python
+soup.select('div.box.active')
+```
+
+---
+
+## 8. requests vs urllib
+
+* 과거: `urllib + BeautifulSoup`
+* 현재 실무: **`requests + BeautifulSoup`**
+
+👉 기본은 `requests`
+👉 문제 생길 때만 `urllib` 참고
+
+---
+
+## 9. HTTP 개념 (아주 최소한)
+
+* 클라이언트 ↔ 서버 통신 규칙 = **HTTP 프로토콜**
+* `requests.get()` = HTTP 요청
+* 서버 응답 = HTML, JSON 등
+
+---
+
+## 10. 여러 페이지 크롤링 패턴
+
+```python
+for num in range(10):
+    url = base_url + str(num)
+    res = requests.get(url)
+```
+
+* 페이지 번호를 문자열로 변환 후 URL에 붙이기
+* 첫 페이지 예외 처리 필요한 경우 `if num == 0` 처리
+
+---
+
+## ✅ 한 줄 요약
+
+> **개발자도구 → class/id 찾기 → select() → 전처리**
+
+이 루트만 자동화되면 실무 크롤링은 충분함 💪
