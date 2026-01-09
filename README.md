@@ -29,7 +29,7 @@
 * `src`, `width`, `height` : 속성(attribute)
 * **크롤링 포인트**: 필요한 정보는 대부분 *태그의 속성* 또는 *태그 안 텍스트*
 
-📌 HTML 태그 사전 (필수)
+ HTML 태그 사전 (필수)
 
 * [https://developer.mozilla.org/ko/docs/Web/HTML/Element](https://developer.mozilla.org/ko/docs/Web/HTML/Element)
 
@@ -48,19 +48,19 @@
 2. `<head>` 안에 `<style>` 태그
 3. `<head>` 안에 외부 CSS 파일 링크
 
-📌 자주 보이는 CSS 프로퍼티
+ 자주 보이는 CSS 프로퍼티
 
 * `color`, `font-size`, `font-family`, `text-align`
 
 ---
 
-## 3. 웹 크롤링 3단계 (⭐ 매우 중요)
+## 3. 웹 크롤링 3단계 (매우 중요)
 
 1. **Fetching** : 웹 페이지 가져오기 (`requests.get()`)
 2. **Parsing** : HTML 구조 파악 (`BeautifulSoup`)
 3. **Extraction** : 필요한 데이터만 추출 (`find`, `select` 등)
 
-👉 이 흐름이 머릿속에 자동으로 떠올라야 함
+ 이 흐름이 머릿속에 자동으로 떠올라야 함
 
 ---
 
@@ -72,7 +72,7 @@
   * 특정 요소를 **고유하게 식별(id)**
   * 여러 요소를 **그룹화(class)** 가능
 
-👉 그래서 데이터 추출할 때 class / id 를 최우선으로 본다
+ 그래서 데이터 추출할 때 class / id 를 최우선으로 본다
 
 ---
 
@@ -130,13 +130,13 @@ items = box.find_all('li')
 * `split()` : 문자열 분리
 * `enumerate()` : 인덱스 번호 붙이기
 
-👉 크롤링의 절반은 **전처리**
+ 크롤링의 절반은 **전처리**
 
 ---
 
 ## 7. 크롤링 실전 TIP ② (CSS Selector)
 
-> ⭐ **select() / select_one() 적극 추천**
+>  **select() / select_one() 적극 추천**
 
 ### 기본 특징
 
@@ -186,8 +186,8 @@ soup.select('div.box.active')
 * 과거: `urllib + BeautifulSoup`
 * 현재 실무: **`requests + BeautifulSoup`**
 
-👉 기본은 `requests`
-👉 문제 생길 때만 `urllib` 참고
+ 기본은 `requests`
+ 문제 생길 때만 `urllib` 참고
 
 ---
 
@@ -212,8 +212,8 @@ for num in range(10):
 
 ---
 
-## ✅ 한 줄 요약
+##  한 줄 요약
 
 > **개발자도구 → class/id 찾기 → select() → 전처리**
 
-이 루트만 자동화되면 실무 크롤링은 충분함 💪
+이 루트만 자동화되면 실무 크롤링은 충분함 
