@@ -241,8 +241,10 @@ def write_excel_template(filename, sheetname, listdata):
     excel_file.save(filename)
     excel_file.close()
 
+write_excel_template('tmp.xlsx', '상품정보', product_lists)
 
-엑셀 파일 읽기 전체 코드
+
+### 엑셀 파일 읽기 전체 코드
 import openpyxl
 
 excel_file = openpyxl.load_workbook('tmp.xlsx') #tmp.xlsx 파일을 열어서 workbook 객체 형성
