@@ -217,3 +217,45 @@ for num in range(10):
 > **개발자도구 → class/id 찾기 → select() → 전처리**
 
 이 루트만 자동화되면 실무 크롤링은 충분함 
+
+
+## 11. 데이터 추출해서 엑셀 파일로 읽기
+```import openpyxl
+
+def write_excel_template(filename, sheetname, listdata):
+    #엑셀 하나 만들어서, 시트 이름 정하고, 리스트 데이터를 행 단위로 쓰고, 저장”
+    
+    excel_file = openpyxl.Workbook()  #workbook생성, 기본 sheet 자동 생성
+    excel_sheet = excel_file.active#.active로 sheet가져오기
+    
+    excel_sheet.column_dimensions['A'].width = 100
+    excel_sheet.column_dimensions['B'].width = 20
+    
+    if sheetname != '': #시트 이름 비어 있으면 기본값 유지, 있으면 교체  
+        excel_sheet.title = sheetname
+    
+    for item in listdata:  #list안에 또 다른 list
+        #[["이름", "가격"], ["상품1", 10000],["상품2", 20000]] 리스트 데이터 구조 예시 
+        excel_sheet.append(item)
+        #각각의 행을 뽑아서 append
+    excel_file.save(filename)
+    excel_file.close()
+
+
+엑셀 파일 읽기 전체 코드
+import openpyxl
+
+excel_file = openpyxl.load_workbook('tmp.xlsx') #tmp.xlsx 파일을 열어서 workbook 객체 형성
+#여러가지 sheet 존재 
+excel_sheet = excel_file.active  
+#Workbook
+# └── Worksheet (excel_sheet)
+ #     └── Cell 들
+# excel_sheet = excel_file.get_sheet_by_name('IT뉴스')
+
+for row in excel_sheet.rows: 
+    print(row[0].value, row[1].value) #row[0] :셀 객체, .value 는 그 셀에 들어 있는 실제 값
+
+excel_file.close()
+
+```
